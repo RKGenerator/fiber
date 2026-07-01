@@ -1,0 +1,20 @@
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.sum  # опционально (можно и коммитить, но некоторые предпочитают не коммитить, но обычно коммитят)
+vendor/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Binaries
+/bin/
+/dist/

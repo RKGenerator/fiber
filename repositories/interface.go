@@ -1,6 +1,8 @@
 package repositories
 
+import "test-fiber/model"
+
 type ApartmentsInterface interface {
-	GetApartments() (*int, error)
+	GetApartments() ([]*model.Apartment, error)
 	GetNBedrooms() (int, error)
 }

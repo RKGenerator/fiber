@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"log"
 	"test-fiber/controlers"
 	"test-fiber/repositories"
@@ -9,25 +8,29 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/logger"
-	"github.com/jackc/pgx/v5"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 func main() {
 	app := fiber.New()
 
-	db, err := pgx.Connect(context.Background(), "postgres://postgres:qwerty123@localhost:5432/table")
+	//db, err := pgx.Connect(context.Background(), "postgres://postgres:qwerty@localhost:5432/cremiabuildings")
+	dsn := "host=localhost user=postgres password=qwerty dbname=cremiabuildings port=5432 sslmode=disable"
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
 	}
 	userRep := repositories.NewApartmentsRepository(db)
 
-	apartmentService := services.NewUserService(userRep)
+	apartmentService := services.NewApartmentsService(userRep)
 	controllers := controlers.Controllers{
 		ApartmentsServices: apartmentService,
 	}
+
 	app.Use(logger.New())
 	app.Get("/hello", controllers.HelloHandler)
-	app.Get("/user", controllers.GetUser)
+	app.Get("/apartments", controllers.GetApartments)
 	app.Get("/bedrooms", controllers.GetBedrooms)
 	app.Listen(":8000")
 }

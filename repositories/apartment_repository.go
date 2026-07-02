@@ -1,39 +1,40 @@
 package repositories
 
 import (
-	"context"
 	"log"
+	"test-fiber/model"
 
-	"github.com/jackc/pgx/v5"
+	"gorm.io/gorm"
 )
 
 type ApartmentsRepository struct {
-	conn *pgx.Conn
+	conn *gorm.DB
 }
 
-func NewApartmentsRepository(conn *pgx.Conn) *ApartmentsRepository {
+func NewApartmentsRepository(conn *gorm.DB) *ApartmentsRepository {
 	return &ApartmentsRepository{
 		conn: conn,
 	}
 }
 
-func (r *ApartmentsRepository) GetApartments() (*int, error) {
-	var id int
-	rows, err := r.conn.Query(context.Background(), "SELECT id FROM parser_apartment where id = 3")
+func (r *ApartmentsRepository) GetApartments() ([]*model.Apartment, error) {
+	var apartments []*model.Apartment
+
+	err := r.conn.Where("n_bedrooms > 1").Find(&apartments).Error
+
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
 
-	for rows.Next() {
-		err := rows.Scan(&id)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-	return &id, nil
+	return apartments, nil
 }
 
+func (r *ApartmentsRepository) GetNBedrooms() (int, error) {
+	return 0, nil
+}
+
+/*
 func (r *ApartmentsRepository) GetNBedrooms() (int, error) {
 	var n_bedrooms int
 	row := r.conn.QueryRow(context.Background(), "SELECT id FROM parser_apartment WHERE n_bedrooms = $1", 2)
@@ -45,3 +46,4 @@ func (r *ApartmentsRepository) GetNBedrooms() (int, error) {
 
 	return n_bedrooms, nil
 }
+*/

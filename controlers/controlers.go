@@ -16,9 +16,9 @@ func (c *Controllers) HelloHandler(ctx fiber.Ctx) {
 	ctx.JSON(ctx.Body())
 }
 
-func (c *Controllers) GetUser(ctx fiber.Ctx) error {
+func (c *Controllers) GetApartments(ctx fiber.Ctx) error {
 
-	user, err := c.ApartmentsServices.GetUser()
+	user, err := c.ApartmentsServices.GetApartments()
 	if err != nil {
 		ctx.Status(fiber.ErrBadRequest.Code)
 		return err

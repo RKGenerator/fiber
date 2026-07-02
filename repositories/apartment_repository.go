@@ -34,6 +34,17 @@ func (r *ApartmentsRepository) GetNBedrooms() (int, error) {
 	return 0, nil
 }
 
+func (r *ApartmentsRepository) GetApartmentsExpirence() ([]*model.Apartment, error) {
+	var apartments []*model.Apartment
+
+	err := r.conn.Preload("PropertyImage").Find(&apartments).Error
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	return apartments, nil
+}
+
 /*
 func (r *ApartmentsRepository) GetNBedrooms() (int, error) {
 	var n_bedrooms int

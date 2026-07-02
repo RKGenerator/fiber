@@ -25,7 +25,7 @@ type Apartment struct {
 	Booking        bool `gorm:"default:false"`
 
 	Bookings       []Booking       `gorm:"foreignKey:ApartmentId"`
-	PropertyImages []PropertyImage `qorm:"foreignKey:PropertyId"`
+	PropertyImages []PropertyImage `gorm:"foreignKey:PropertyId"`
 }
 
 func (Apartment) TableName() string {

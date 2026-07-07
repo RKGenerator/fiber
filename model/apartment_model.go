@@ -14,7 +14,7 @@ type Apartment struct {
 	NBedrooms      int16
 	AreaSQFT       int32
 	Description    string
-	BuildingID     int64
+	BuildingId     int64
 	CreatedAt      time.Time
 	PriceSQFT      float32
 	Disabled       bool `gorm:"default:false"`

@@ -16,13 +16,13 @@ func NewApartmentsService(apartmentRep repositories.ApartmentsInterface) *Apartm
 	}
 }
 
-func (s *ApartmentsServices) GetApartments() ([]*dto.ApartmentDTO, error) {
+func (s *ApartmentsServices) GetApartments() ([]*dto.ApartmentResponse, error) {
 	query, err := s.apartmentsRepository.GetApartments()
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
-	dto, err := dto.ApartmentsDTO(query)
+	dto, err := dto.ApartmentsResponse(query)
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -31,21 +31,20 @@ func (s *ApartmentsServices) GetApartments() ([]*dto.ApartmentDTO, error) {
 	return dto, nil
 }
 
-func (s *ApartmentsServices) GetApartmentsExpirence() ([]*dto.ApartmentDetailsDTO, error) {
-	querry, err := s.apartmentsRepository.GetApartmentsExpirence()
+func (s *ApartmentsServices) GetReq(req dto.ApartmentDetailsRequest) ([]*dto.ApartmentDetailsResponse, error) {
+
+	querry, err := s.apartmentsRepository.GetReq(req)
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
-	dto, err := dto.ApartmentsDetailsDTO(querry)
+
+	dto, err := dto.ApartmentsDetailsResponse(querry)
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
 
 	return dto, nil
-}
 
-func (s *ApartmentsServices) GetBedrooms() (int, error) {
-	return s.apartmentsRepository.GetNBedrooms()
 }

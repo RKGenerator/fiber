@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"log"
+	"test-fiber/dto"
 	"test-fiber/model"
 
 	"gorm.io/gorm"
@@ -20,7 +21,7 @@ func NewApartmentsRepository(conn *gorm.DB) *ApartmentsRepository {
 func (r *ApartmentsRepository) GetApartments() ([]*model.Apartment, error) {
 	var apartments []*model.Apartment
 
-	err := r.conn.Where("n_bedrooms > 1").Find(&apartments).Error
+	err := r.conn.Find(&apartments).Error
 
 	if err != nil {
 		log.Println(err)
@@ -30,31 +31,35 @@ func (r *ApartmentsRepository) GetApartments() ([]*model.Apartment, error) {
 	return apartments, nil
 }
 
-func (r *ApartmentsRepository) GetNBedrooms() (int, error) {
-	return 0, nil
-}
+func (r *ApartmentsRepository) GetReq(req dto.ApartmentDetailsRequest) ([]*model.Apartment, error) {
 
-func (r *ApartmentsRepository) GetApartmentsExpirence() ([]*model.Apartment, error) {
+	query := r.conn.Model(&model.Apartment{}).Preload("PropertyImages")
+
+	if req.DistrictId != nil {
+		query = query.Where("district_is = ?", req.DistrictId)
+	}
+
+	if req.AreaSQFTFrom != nil {
+		query = query.Where("area_sqft >= ?", req.AreaSQFTFrom)
+	}
+
+	if req.AreaSQFTTo != nil {
+		query = query.Where("area_sqft <= ?", req.AreaSQFTTo)
+	}
+
+	if req.FloorFrom != nil {
+		query = query.Where("floor >= ?", req.FloorFrom)
+	}
+
+	if req.FloorTo != nil {
+		query = query.Where("floor <= ?", req.FloorTo)
+	}
+
 	var apartments []*model.Apartment
-
-	err := r.conn.Preload("PropertyImages").Find(&apartments).Error
+	err := query.Find(&apartments).Error
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
+
 	return apartments, nil
 }
-
-/*
-func (r *ApartmentsRepository) GetNBedrooms() (int, error) {
-	var n_bedrooms int
-	row := r.conn.QueryRow(context.Background(), "SELECT id FROM parser_apartment WHERE n_bedrooms = $1", 2)
-
-	err := row.Scan(&n_bedrooms)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return n_bedrooms, nil
-}
-*/

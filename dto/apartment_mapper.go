@@ -5,16 +5,16 @@ import (
 	"test-fiber/model"
 )
 
-func ApartmentsDTO(apartsModel []*model.Apartment) ([]*ApartmentDTO, error) {
+func ApartmentsResponse(apartsModel []*model.Apartment) ([]*ApartmentResponse, error) {
 	if apartsModel == nil {
 		return nil, nil
 	}
 
-	var apartments []*ApartmentDTO
+	var apartments []*ApartmentResponse
 
 	for _, apartmentModel := range apartsModel {
 		log.Println(apartmentModel)
-		apartment := ApartmentDTO{
+		apartment := ApartmentResponse{
 			Id:             apartmentModel.Id,
 			SourcePriceAED: apartmentModel.SourcePriceAED,
 			Address:        apartmentModel.Address,
@@ -23,7 +23,7 @@ func ApartmentsDTO(apartsModel []*model.Apartment) ([]*ApartmentDTO, error) {
 			NBedrooms:      apartmentModel.NBedrooms,
 			AreaSQFT:       apartmentModel.AreaSQFT,
 			Description:    apartmentModel.Description,
-			BuildingID:     apartmentModel.BuildingID,
+			BuildingID:     apartmentModel.BuildingId,
 			CreatedAt:      apartmentModel.CreatedAt,
 			PriceSQFT:      apartmentModel.PriceSQFT,
 			Floor:          apartmentModel.Floor,
@@ -36,16 +36,16 @@ func ApartmentsDTO(apartsModel []*model.Apartment) ([]*ApartmentDTO, error) {
 
 }
 
-func ApartmentsDetailsDTO(apartsModel []*model.Apartment) ([]*ApartmentDetailsDTO, error) {
+func ApartmentsDetailsResponse(apartsModel []*model.Apartment) ([]*ApartmentDetailsResponse, error) {
 	if apartsModel == nil {
 		return nil, nil
 	}
 
-	apartments := make([]*ApartmentDetailsDTO, 0, len(apartsModel))
+	apartments := make([]*ApartmentDetailsResponse, 0, len(apartsModel))
 
 	for _, apartmentModel := range apartsModel {
-		apartment := ApartmentDetailsDTO{
-			ApartmentDTO: ApartmentDTO{
+		apartment := ApartmentDetailsResponse{
+			ApartmentResponse: ApartmentResponse{
 				Id:             apartmentModel.Id,
 				SourcePriceAED: apartmentModel.SourcePriceAED,
 				Address:        apartmentModel.Address,
@@ -54,13 +54,13 @@ func ApartmentsDetailsDTO(apartsModel []*model.Apartment) ([]*ApartmentDetailsDT
 				NBedrooms:      apartmentModel.NBedrooms,
 				AreaSQFT:       apartmentModel.AreaSQFT,
 				Description:    apartmentModel.Description,
-				BuildingID:     apartmentModel.BuildingID,
+				BuildingID:     apartmentModel.BuildingId,
 				CreatedAt:      apartmentModel.CreatedAt,
 				PriceSQFT:      apartmentModel.PriceSQFT,
 				Floor:          apartmentModel.Floor,
 				Booking:        apartmentModel.Booking,
 			},
-			PropertyImagesDTO: *ImagesDTO(apartmentModel),
+			PropertyImagesResponse: *ImagesDTO(apartmentModel),
 		}
 
 		apartments = append(apartments, &apartment)

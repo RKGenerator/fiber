@@ -1,7 +1,7 @@
 package controlers
 
 import (
-	"fmt"
+	"test-fiber/dto"
 	"test-fiber/services"
 
 	"github.com/gofiber/fiber/v3"
@@ -9,11 +9,6 @@ import (
 
 type Controllers struct {
 	ApartmentsServices *services.ApartmentsServices
-}
-
-func (c *Controllers) HelloHandler(ctx fiber.Ctx) {
-	fmt.Println(string(ctx.Body()))
-	ctx.JSON(ctx.Body())
 }
 
 func (c *Controllers) GetApartments(ctx fiber.Ctx) error {
@@ -26,22 +21,16 @@ func (c *Controllers) GetApartments(ctx fiber.Ctx) error {
 	return ctx.JSON(user)
 }
 
-func (c *Controllers) GetApartmentsExpirence(ctx fiber.Ctx) error {
+func (c *Controllers) GetReq(ctx fiber.Ctx) error {
+	req := new(dto.ApartmentDetailsRequest)
+	if err := ctx.Bind().Query(req); err != nil {
+		return err
+	}
 
-	user, err := c.ApartmentsServices.GetApartmentsExpirence()
+	aparts, err := c.ApartmentsServices.GetReq(*req)
 	if err != nil {
 		ctx.Status(fiber.ErrBadRequest.Code)
 		return err
 	}
-	return ctx.JSON(user)
-}
-
-func (c *Controllers) GetBedrooms(ctx fiber.Ctx) error {
-
-	n_bedrooms, err := c.ApartmentsServices.GetBedrooms()
-	if err != nil {
-		ctx.Status(fiber.ErrBadRequest.Code)
-		return err
-	}
-	return ctx.JSON(n_bedrooms)
+	return ctx.JSON(aparts)
 }

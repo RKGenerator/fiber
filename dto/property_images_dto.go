@@ -1,5 +1,5 @@
 package dto
 
-type PropertyImagesDTO struct {
+type PropertyImagesResponse struct {
 	Urls []*string `json:"images"`
 }

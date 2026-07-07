@@ -26,6 +26,16 @@ func (c *Controllers) GetApartments(ctx fiber.Ctx) error {
 	return ctx.JSON(user)
 }
 
+func (c *Controllers) GetApartmentsExpirence(ctx fiber.Ctx) error {
+
+	user, err := c.ApartmentsServices.GetApartmentsExpirence()
+	if err != nil {
+		ctx.Status(fiber.ErrBadRequest.Code)
+		return err
+	}
+	return ctx.JSON(user)
+}
+
 func (c *Controllers) GetBedrooms(ctx fiber.Ctx) error {
 
 	n_bedrooms, err := c.ApartmentsServices.GetBedrooms()

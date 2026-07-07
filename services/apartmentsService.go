@@ -22,8 +22,22 @@ func (s *ApartmentsServices) GetApartments() ([]*dto.ApartmentDTO, error) {
 		log.Println(err)
 		return nil, err
 	}
+	dto, err := dto.ApartmentsDTO(query)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
 
-	dto, err := dto.GetApartmentsDTO(query)
+	return dto, nil
+}
+
+func (s *ApartmentsServices) GetApartmentsExpirence() ([]*dto.ApartmentDetailsDTO, error) {
+	querry, err := s.apartmentsRepository.GetApartmentsExpirence()
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	dto, err := dto.ApartmentsDetailsDTO(querry)
 	if err != nil {
 		log.Println(err)
 		return nil, err

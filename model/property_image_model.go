@@ -5,6 +5,8 @@ type PropertyImage struct {
 	Url        string `qorm:"type:varchar(1000)"`
 	PropertyId int64  `qorm:"index"`
 	Processed  bool   `qorm:"default:false"`
+}
 
-	Apartment Apartment
+func (PropertyImage) TableName() string {
+	return "parser_propertiesimages"
 }

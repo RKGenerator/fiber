@@ -6,23 +6,23 @@ import (
 	"test-fiber/repositories"
 )
 
-type ApartmentsServices struct {
+type ApartmentServices struct {
 	apartmentsRepository repositories.ApartmentsInterface
 }
 
-func NewApartmentsService(apartmentRep repositories.ApartmentsInterface) *ApartmentsServices {
-	return &ApartmentsServices{
+func NewApartmentsService(apartmentRep repositories.ApartmentsInterface) *ApartmentServices {
+	return &ApartmentServices{
 		apartmentsRepository: apartmentRep,
 	}
 }
 
-func (s *ApartmentsServices) GetApartments() ([]*dto.ApartmentResponse, error) {
+func (s *ApartmentServices) GetApartments() ([]*dto.ApartmentResponse, error) {
 	query, err := s.apartmentsRepository.GetApartments()
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
-	dto, err := dto.ApartmentsResponse(query)
+	dto, err := dto.GetApartmentsResponse(query)
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -31,15 +31,15 @@ func (s *ApartmentsServices) GetApartments() ([]*dto.ApartmentResponse, error) {
 	return dto, nil
 }
 
-func (s *ApartmentsServices) GetReq(req dto.ApartmentDetailsRequest) ([]*dto.ApartmentDetailsResponse, error) {
+func (s *ApartmentServices) GetApartmentsDetail(req dto.ApartmentDetailsRequest) ([]*dto.ApartmentDetailsResponse, error) {
 
-	querry, err := s.apartmentsRepository.GetReq(req)
+	querry, err := s.apartmentsRepository.GetApartmentsDetail(req)
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
 
-	dto, err := dto.ApartmentsDetailsResponse(querry)
+	dto, err := dto.GetApartmentsDetailsResponse(querry)
 	if err != nil {
 		log.Println(err)
 		return nil, err

@@ -3,7 +3,7 @@
     "total_count": 1277,
     "results": [
         {
-            "id": 1986,
+            "id": 1986, 
             "images": [
                 "https://pb16780.profitbase.ru/uploads/preset/16780/662b94a3a1abc.png",
                 "https://pb16780.profitbase.ru/uploads/layout/16780/662b9594ba30f.png",
@@ -19,7 +19,7 @@
             "plot_img_b64": null,
             "property_overview": [],
             "service_charge_per_sqft": null,
-            "is_favorite": true,
+            ??"is_favorite": true,
             "building": {
                 "id": 8,
                 "latitude": "44.8390781972",

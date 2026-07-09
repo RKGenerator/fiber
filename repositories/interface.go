@@ -7,5 +7,9 @@ import (
 
 type ApartmentsInterface interface {
 	GetApartments() ([]*model.Apartment, error)
-	GetReq(dto.ApartmentDetailsRequest) ([]*model.Apartment, error)
+	GetApartmentsDetail(dto.ApartmentDetailsRequest) ([]*model.Apartment, error)
+}
+
+type BuildingInterface interface {
+	GetBuildingsDetail() ([]*model.Building, error)
 }

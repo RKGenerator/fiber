@@ -1,12 +1,9 @@
 package model
 
-import (
-	"time"
-)
+import "time"
 
 type Apartment struct {
 	Id             int64 `gorm:"primaryKey"`
-	UpdatedAt      time.Time
 	SourcePriceAED int64
 	Address        string `gorm:"type:varchar(300)"`
 	PropertyType   string `gorm:"type:varchar(300)"`
@@ -16,6 +13,7 @@ type Apartment struct {
 	Description    string
 	BuildingId     int64
 	CreatedAt      time.Time
+	UpdatedAt      time.Time
 	PriceSQFT      float32
 	Disabled       bool `gorm:"default:false"`
 	TouchedAt      time.Time
@@ -26,6 +24,9 @@ type Apartment struct {
 
 	Bookings       []Booking       `gorm:"foreignKey:ApartmentId"`
 	PropertyImages []PropertyImage `gorm:"foreignKey:PropertyId"`
+	Tags           []Tag           `gorm:"many2many:parser_apartment_tags;joinReferences:tags_id"`
+
+	Building Building
 }
 
 func (Apartment) TableName() string {

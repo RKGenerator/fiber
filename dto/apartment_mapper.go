@@ -5,29 +5,31 @@ import (
 	"test-fiber/model"
 )
 
-func ApartmentsResponse(apartsModel []*model.Apartment) ([]*ApartmentResponse, error) {
-	if apartsModel == nil {
+func GetApartmentsResponse(apartModels []*model.Apartment) ([]*ApartmentResponse, error) {
+	if apartModels == nil {
 		return nil, nil
 	}
 
 	var apartments []*ApartmentResponse
 
-	for _, apartmentModel := range apartsModel {
+	for _, apartmentModel := range apartModels {
 		log.Println(apartmentModel)
 		apartment := ApartmentResponse{
-			Id:             apartmentModel.Id,
-			SourcePriceAED: apartmentModel.SourcePriceAED,
-			Address:        apartmentModel.Address,
-			PropertyType:   apartmentModel.PropertyType,
-			Purpose:        apartmentModel.Purpose,
-			NBedrooms:      apartmentModel.NBedrooms,
-			AreaSQFT:       apartmentModel.AreaSQFT,
-			Description:    apartmentModel.Description,
-			BuildingID:     apartmentModel.BuildingId,
-			CreatedAt:      apartmentModel.CreatedAt,
-			PriceSQFT:      apartmentModel.PriceSQFT,
-			Floor:          apartmentModel.Floor,
-			Booking:        apartmentModel.Booking}
+			Id:           apartmentModel.Id,
+			SourcePrice:  apartmentModel.SourcePriceAED,
+			Address:      apartmentModel.Address,
+			PropertyType: apartmentModel.PropertyType,
+			Purpose:      apartmentModel.Purpose,
+			NBedrooms:    apartmentModel.NBedrooms,
+			AreaSQFT:     apartmentModel.AreaSQFT,
+			Description:  apartmentModel.Description,
+			CreatedAt:    apartmentModel.CreatedAt,
+			UpdatedAt:    apartmentModel.UpdatedAt,
+			PriceSQFT:    apartmentModel.PriceSQFT,
+			Floor:        apartmentModel.Floor,
+			Booking:      apartmentModel.Booking,
+			ExternalId:   apartmentModel.ExternalId,
+			Disabled:     apartmentModel.Disabled}
 
 		apartments = append(apartments, &apartment)
 	}
@@ -36,31 +38,35 @@ func ApartmentsResponse(apartsModel []*model.Apartment) ([]*ApartmentResponse, e
 
 }
 
-func ApartmentsDetailsResponse(apartsModel []*model.Apartment) ([]*ApartmentDetailsResponse, error) {
-	if apartsModel == nil {
+func GetApartmentsDetailsResponse(apartModels []*model.Apartment) ([]*ApartmentDetailsResponse, error) {
+	if apartModels == nil {
 		return nil, nil
 	}
 
-	apartments := make([]*ApartmentDetailsResponse, 0, len(apartsModel))
+	apartments := make([]*ApartmentDetailsResponse, 0, len(apartModels))
 
-	for _, apartmentModel := range apartsModel {
+	for _, apartmentModel := range apartModels {
 		apartment := ApartmentDetailsResponse{
 			ApartmentResponse: ApartmentResponse{
-				Id:             apartmentModel.Id,
-				SourcePriceAED: apartmentModel.SourcePriceAED,
-				Address:        apartmentModel.Address,
-				PropertyType:   apartmentModel.PropertyType,
-				Purpose:        apartmentModel.Purpose,
-				NBedrooms:      apartmentModel.NBedrooms,
-				AreaSQFT:       apartmentModel.AreaSQFT,
-				Description:    apartmentModel.Description,
-				BuildingID:     apartmentModel.BuildingId,
-				CreatedAt:      apartmentModel.CreatedAt,
-				PriceSQFT:      apartmentModel.PriceSQFT,
-				Floor:          apartmentModel.Floor,
-				Booking:        apartmentModel.Booking,
+				Id:           apartmentModel.Id,
+				SourcePrice:  apartmentModel.SourcePriceAED,
+				Address:      apartmentModel.Address,
+				PropertyType: apartmentModel.PropertyType,
+				Purpose:      apartmentModel.Purpose,
+				NBedrooms:    apartmentModel.NBedrooms,
+				AreaSQFT:     apartmentModel.AreaSQFT,
+				Description:  apartmentModel.Description,
+				CreatedAt:    apartmentModel.CreatedAt,
+				UpdatedAt:    apartmentModel.UpdatedAt,
+				PriceSQFT:    apartmentModel.PriceSQFT,
+				Floor:        apartmentModel.Floor,
+				Booking:      apartmentModel.Booking,
+				ExternalId:   apartmentModel.ExternalId,
+				Disabled:     apartmentModel.Disabled,
 			},
-			PropertyImagesResponse: *ImagesDTO(apartmentModel),
+			PropertyImagesResponse: GetImagesResponse(apartmentModel),
+			Bulding:                GetBuildingResponse(apartmentModel.Building),
+			Tags:                   GetTags(apartmentModel.Tags),
 		}
 
 		apartments = append(apartments, &apartment)

@@ -40,7 +40,7 @@ func runMigrations(db *sql.DB) error {
 	}
 
 	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
-		return fmt.Errorf("couLd not run migrate: %w", err)
+		return fmt.Errorf("could not run migrate: %w", err)
 	}
 
 	log.Println("Migrations applied succesfully")

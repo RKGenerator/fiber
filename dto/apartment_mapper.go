@@ -5,10 +5,7 @@ import (
 	"test-fiber/model"
 )
 
-func GetApartmentsResponse(apartModels []*model.Apartment) ([]*ApartmentResponse, error) {
-	if apartModels == nil {
-		return nil, nil
-	}
+func GetApartmentsResponse(apartModels []*model.Apartment) []*ApartmentResponse {
 
 	var apartments []*ApartmentResponse
 
@@ -34,14 +31,11 @@ func GetApartmentsResponse(apartModels []*model.Apartment) ([]*ApartmentResponse
 		apartments = append(apartments, &apartment)
 	}
 
-	return apartments, nil
+	return apartments
 
 }
 
-func GetApartmentsDetailsResponse(apartModels []*model.Apartment) ([]*ApartmentDetailsResponse, error) {
-	if apartModels == nil {
-		return nil, nil
-	}
+func GetApartmentsDetailsResponse(apartModels []*model.Apartment) []*ApartmentDetailsResponse {
 
 	apartments := make([]*ApartmentDetailsResponse, 0, len(apartModels))
 
@@ -73,5 +67,5 @@ func GetApartmentsDetailsResponse(apartModels []*model.Apartment) ([]*ApartmentD
 
 	}
 
-	return apartments, nil
+	return apartments
 }

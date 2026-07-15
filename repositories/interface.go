@@ -11,5 +11,7 @@ type ApartmentsInterface interface {
 }
 
 type BuildingInterface interface {
-	GetBuildingsDetail() ([]*model.Building, error)
+	GetBuildings() ([]*model.Building, error)
+	GetBuildingStatsByBedrooms() ([]model.RoomBuldingStats, error)
+	GetBuildingsWithStats() ([]*model.BuildingWithStats, error)
 }

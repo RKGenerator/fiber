@@ -22,11 +22,7 @@ func (s *ApartmentServices) GetApartments() ([]*dto.ApartmentResponse, error) {
 		log.Println(err)
 		return nil, err
 	}
-	dto, err := dto.GetApartmentsResponse(query)
-	if err != nil {
-		log.Println(err)
-		return nil, err
-	}
+	dto := dto.GetApartmentsResponse(query)
 
 	return dto, nil
 }
@@ -39,11 +35,7 @@ func (s *ApartmentServices) GetApartmentsDetail(req dto.ApartmentDetailsRequest)
 		return nil, err
 	}
 
-	dto, err := dto.GetApartmentsDetailsResponse(querry)
-	if err != nil {
-		log.Println(err)
-		return nil, err
-	}
+	dto := dto.GetApartmentsDetailsResponse(querry)
 
 	return dto, nil
 

@@ -33,11 +33,11 @@ func (r *ApartmentsRepository) GetApartments() ([]*model.Apartment, error) {
 
 func (r *ApartmentsRepository) GetApartmentsDetail(req dto.ApartmentDetailsRequest) ([]*model.Apartment, error) {
 
-	query := r.conn.Model(&model.Apartment{}).Preload("PropertyImages").Preload("Tags").Preload("Building")
+	query := r.conn.Model(&model.Apartment{}).Preload("PropertyImages").Preload("Tags").Preload("Building.District")
 	if req.DistrictId != nil {
-		query = query.Joins("INNER JOIN parser_building AS building on building.id = parser_apartment.building_id").Where("building.district = ?", req.DistrictId)
+		query = query.Joins("INNER JOIN parser_building AS buildingN on buildingN.id = parser_apartment.building_id").Where("buildingN.district = ?", req.DistrictId)
 	}
-	//query = query.Preload("Building")
+
 	if req.AreaSQFTFrom != nil {
 		query = query.Where("area_sqft >= ?", req.AreaSQFTFrom)
 	}
@@ -53,10 +53,12 @@ func (r *ApartmentsRepository) GetApartmentsDetail(req dto.ApartmentDetailsReque
 	if req.FloorTo != nil {
 		query = query.Where("floor <= ?", req.FloorTo)
 	}
-	query = query.Scopes(Paginator(int(req.Page), int(req.PageSize)))
+
+	query = query.Scopes(Paginator(req.Page, req.PageSize))
 
 	var apartments []*model.Apartment
 	err := query.Find(&apartments).Error
+
 	if err != nil {
 		return nil, err
 	}

@@ -1,6 +1,7 @@
 package controlers
 
 import (
+	basefunc "test-fiber/base_func"
 	"test-fiber/dto"
 	"test-fiber/services"
 
@@ -24,6 +25,12 @@ func (c *ApartmentController) GetApartments(ctx fiber.Ctx) error {
 func (c *ApartmentController) GetApartmentsDetail(ctx fiber.Ctx) error {
 	req := new(dto.ApartmentDetailsRequest)
 	if err := ctx.Bind().Query(req); err != nil {
+		return err
+	}
+
+	err := basefunc.CheckPaginationRequest(req.PaginatorRequest)
+	if err != nil {
+		ctx.Status(fiber.ErrBadRequest.Code)
 		return err
 	}
 

@@ -5,18 +5,20 @@ import (
 	"embed"
 	"fmt"
 	"log"
+	"os"
+	"test-fiber/auth"
 	"test-fiber/controlers"
 	"test-fiber/repositories"
 	"test-fiber/services"
 
+	jwtware "github.com/gofiber/contrib/v3/jwt"
+
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/logger"
-
 	"github.com/golang-migrate/migrate/v4"
 	migratepostgres "github.com/golang-migrate/migrate/v4/database/postgres"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
 	"gorm.io/driver/postgres"
-
 	"gorm.io/gorm"
 )
 
@@ -54,7 +56,7 @@ func main() {
 	})
 
 	//db, err := pgx.Connect(context.Background(), "postgres://postgres:qwerty@localhost:5432/cremiabuildings")
-	dsn := "host=localhost user=postgres password=qwerty dbname=cremiabuildings port=5432 sslmode=disable"
+	dsn := "host=localhost user=postgres password=qwerty123 dbname=crimeabuildings port=5432 sslmode=disable"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
@@ -84,6 +86,36 @@ func main() {
 	app.Get("/apartments", apartmentControler.GetApartments)
 	app.Get("/apartments/search", apartmentControler.GetApartmentsDetail)
 	app.Get("/buildings", buildingControler.GetReq)
-	app.Listen(":8000")
 
+	app.Get("/login", func(c fiber.Ctx) error {
+		tokenString, err := auth.GenerateToken()
+		if err != nil {
+			fmt.Println(err)
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Could not generate token",
+			})
+		}
+
+		return c.JSON(fiber.Map{"token": tokenString})
+	})
+
+	test := app.Group("/test")
+	test.Use(jwtware.New(jwtware.Config{
+		SigningKey: jwtware.SigningKey{Key: []byte(os.Getenv("JWT_SECRET"))},
+		Claims:     &auth.AuthClaims{},
+	}))
+
+	test.Get("/i", func(c fiber.Ctx) error {
+		// Получение токена из locals (как в v2)
+		user := jwtware.FromContext(c)
+		claims := user.Claims.(*auth.AuthClaims)
+		username := claims.UserId
+
+		return c.JSON(fiber.Map{
+			"message": "Welcome to your profile!",
+			"user":    username,
+		})
+	})
+
+	app.Listen(":8000")
 }

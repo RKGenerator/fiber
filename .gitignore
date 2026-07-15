@@ -14,7 +14,7 @@ vendor/
 .vscode/
 *.swp
 *.swo
-
+.env
 # Binaries
 /bin/
 /dist/

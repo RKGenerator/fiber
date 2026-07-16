@@ -8,6 +8,7 @@ import (
 	"os"
 	"test-fiber/auth"
 	"test-fiber/controlers"
+	"test-fiber/model"
 	"test-fiber/repositories"
 	"test-fiber/services"
 
@@ -56,7 +57,7 @@ func main() {
 	})
 
 	//db, err := pgx.Connect(context.Background(), "postgres://postgres:qwerty@localhost:5432/cremiabuildings")
-	dsn := "host=localhost user=postgres password=qwerty123 dbname=crimeabuildings port=5432 sslmode=disable"
+	dsn := "host=localhost user=postgres password=qwerty dbname=cremiabuildings port=5432 sslmode=disable"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
@@ -69,9 +70,9 @@ func main() {
 	if err := runMigrations(sqlDB); err != nil {
 		log.Fatal("Migration failed: ", err)
 	}
-	ApartRep := repositories.NewApartmentsRepository(db)
 
-	apartmentService := services.NewApartmentsService(ApartRep)
+	apartRep := repositories.NewApartmentsRepository(db)
+	apartmentService := services.NewApartmentsService(apartRep)
 	apartmentControler := controlers.ApartmentController{
 		ApartmentsServices: apartmentService,
 	}
@@ -82,13 +83,22 @@ func main() {
 		BuildingService: buildingService,
 	}
 
+	userRep := repositories.NewUserRepository(db)
+	userService := services.NewUserService(userRep)
+	userController := controlers.UserController{
+		UserService: userService,
+	}
+
 	app.Use(logger.New())
+
+	app.Post("/login", userController.UserLogin)
+
 	app.Get("/apartments", apartmentControler.GetApartments)
 	app.Get("/apartments/search", apartmentControler.GetApartmentsDetail)
-	app.Get("/buildings", buildingControler.GetReq)
+	app.Get("/buildings", buildingControler.GetBuildingDetail)
 
-	app.Get("/login", func(c fiber.Ctx) error {
-		tokenString, err := auth.GenerateToken()
+	app.Get("/logint", func(c fiber.Ctx) error {
+		tokenString, err := auth.GenerateToken(model.User{})
 		if err != nil {
 			fmt.Println(err)
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -106,7 +116,20 @@ func main() {
 	}))
 
 	test.Get("/i", func(c fiber.Ctx) error {
-		// Получение токена из locals (как в v2)
+		user := jwtware.FromContext(c)
+		claims := user.Claims.(*auth.AuthClaims)
+		username := claims.UserId
+
+		return c.JSON(fiber.Map{
+			"message": "Welcome to your profile!",
+			"user":    username,
+		})
+	})
+
+	api := app.Group("/api")
+	api.Use(auth.OptionalJWTMiddleware())
+	api.Post("/login", userController.UserLogin)
+	api.Get("/i", func(c fiber.Ctx) error {
 		user := jwtware.FromContext(c)
 		claims := user.Claims.(*auth.AuthClaims)
 		username := claims.UserId

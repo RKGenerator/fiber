@@ -12,7 +12,7 @@ type BuildingController struct {
 	BuildingService *services.BuildingService
 }
 
-func (c *BuildingController) GetReq(ctx fiber.Ctx) error {
+func (c *BuildingController) GetBuildingDetail(ctx fiber.Ctx) error {
 	req := new(dto.BuildingRequest)
 	err := ctx.Bind().Query(req)
 	if err != nil {

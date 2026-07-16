@@ -1,8 +1,17 @@
 package basefunc
 
 import (
+	"crypto/pbkdf2"
+
+	"crypto/sha256"
+	"crypto/subtle"
+	"encoding/base64"
+	"fmt"
+	"strconv"
+	"strings"
 	"test-fiber/dto"
 	apperrors "test-fiber/errors"
+	//"golang.org/x/crypto/pbkdf2"
 )
 
 func CheckPaginationRequest(req dto.PaginatorRequest) error {
@@ -10,4 +19,33 @@ func CheckPaginationRequest(req dto.PaginatorRequest) error {
 		return apperrors.ErrBadRequest
 	}
 	return nil
+}
+
+func CheckPassword(password, hashed string) bool {
+	parts := strings.Split(hashed, "$")
+	if len(parts) != 4 {
+		return false
+	}
+
+	iterations := parts[1]
+	salt := parts[2]
+	hash := parts[3]
+
+	iter, err := strconv.Atoi(iterations)
+	if err != nil {
+		return false
+	}
+
+	storedHash, err := base64.StdEncoding.DecodeString(hash)
+	if err != nil {
+		fmt.Println(err)
+		return false
+	}
+
+	newHash, err := pbkdf2.Key(sha256.New, password, []byte(salt), iter, len(storedHash))
+	if err != nil {
+		return false
+	}
+
+	return subtle.ConstantTimeCompare(newHash, storedHash) == 1
 }

@@ -1,6 +1,10 @@
 package dto
 
 type AuthRequest struct {
-	User     string `query:"user"`
+	Email    string `query:"email"`
 	Password string `query:"password"`
+}
+
+type AuthResponse struct {
+	AccessToken string `json:"access"`
 }

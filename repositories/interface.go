@@ -15,3 +15,7 @@ type BuildingInterface interface {
 	GetBuildingStatsByBedrooms() ([]model.RoomBuldingStats, error)
 	GetBuildingsWithStats() ([]*model.BuildingWithStats, error)
 }
+
+type UserInterface interface {
+	GetUserByEmail(string) (*model.User, error)
+}

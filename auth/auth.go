@@ -2,6 +2,7 @@ package auth
 
 import (
 	"os"
+	"test-fiber/model"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -14,12 +15,21 @@ type AuthClaims struct {
 	jwt.RegisteredClaims
 }
 
-func GenerateToken() (string, error) {
+func GenerateToken(user model.User) (string, error) {
+	role := ""
+	if user.IsSuperuser {
+		role = "admin"
+	} else if user.IsStaff {
+		role = "staff"
+	} else {
+		role = "user"
+	}
+
 	claims := AuthClaims{
-		UserId: 123,
-		Role:   "admin",
+		UserId: user.Id,
+		Role:   role,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(5 * time.Minute)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(5 * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			NotBefore: jwt.NewNumericDate(time.Now()),
 			ID:        uuid.New().String(),

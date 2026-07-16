@@ -3,6 +3,7 @@ module test-fiber
 go 1.25.0
 
 require (
+	github.com/gofiber/contrib/v3/jwt v1.1.7
 	github.com/gofiber/fiber/v3 v3.4.0
 	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/golang-migrate/migrate/v4 v4.19.1
@@ -14,7 +15,6 @@ require (
 require (
 	github.com/MicahParks/keyfunc/v2 v2.1.0 // indirect
 	github.com/andybalholm/brotli v1.2.2 // indirect
-	github.com/gofiber/contrib/v3/jwt v1.1.7 // indirect
 	github.com/gofiber/schema v1.8.2 // indirect
 	github.com/gofiber/utils/v2 v2.1.2 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect

@@ -4,6 +4,7 @@ import (
 	"log"
 	"test-fiber/dto"
 	"test-fiber/model"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -35,7 +36,8 @@ func (r *ApartmentsRepository) GetApartmentsDetail(req dto.ApartmentDetailsReque
 
 	query := r.conn.Model(&model.Apartment{}).Preload("PropertyImages").Preload("Tags").Preload("Building.District")
 	if req.DistrictId != nil {
-		query = query.Joins("INNER JOIN parser_building AS buildingN on buildingN.id = parser_apartment.building_id").Where("buildingN.district = ?", req.DistrictId)
+		query = query.Joins("INNER JOIN parser_building AS buildingN on buildingN.id = parser_apartment.building_id").
+			Where("buildingN.district = ?", req.DistrictId)
 	}
 
 	if req.AreaSQFTFrom != nil {
@@ -64,4 +66,48 @@ func (r *ApartmentsRepository) GetApartmentsDetail(req dto.ApartmentDetailsReque
 	}
 
 	return apartments, nil
+}
+
+func (r *ApartmentsRepository) GetFavoriteToUser(userId int, apartmentIds []int64) ([]int64, error) {
+
+	var favoriteIds []int64
+
+	if len(apartmentIds) > 0 {
+		err := r.conn.Table("parser_favorite_object").
+			Where("user_id = ? AND apartment_id IN (?)", userId, apartmentIds).
+			Pluck("apartment_id", &favoriteIds).Error
+		if err != nil {
+			return nil, err
+		}
+
+		return favoriteIds, nil
+	}
+
+	return nil, nil
+}
+
+func (r *ApartmentsRepository) AddFavoriteApartmentToUser(apartId int64, userId int) error {
+	data := &model.FavoriteObject{
+		CreatedAt:   time.Now(),
+		UserId:      userId,
+		ApartmentId: apartId,
+	}
+
+	err := r.conn.Create(data).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *ApartmentsRepository) DeleteFavoritesToUser(apartIds []int64, userId int) (*int64, error) {
+	res := r.conn.Model(&model.FavoriteObject{}).Where("user_id = ?", userId).
+		Where("apartment_id IN (?)", apartIds).Delete(&model.FavoriteObject{})
+
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	return &res.RowsAffected, nil
 }

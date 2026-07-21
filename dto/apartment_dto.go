@@ -18,6 +18,7 @@ type ApartmentResponse struct {
 	Booking      bool      `json:"booking"`
 	ExternalId   int64     `json:"external_id"`
 	Disabled     bool      `json:"disabled"`
+	IsFavorite   bool      `json:"is_favorite"`
 }
 
 type ApartmentDetailsResponse struct {

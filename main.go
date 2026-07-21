@@ -98,7 +98,9 @@ func main() {
 	app.Get("/buildings", buildingControler.GetBuildingDetail)
 
 	app.Get("/logint", func(c fiber.Ctx) error {
-		tokenString, err := auth.GenerateToken(model.User{})
+		tokenString, err := auth.GenerateToken(model.User{
+			Id: 1111111,
+		})
 		if err != nil {
 			fmt.Println(err)
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -128,7 +130,7 @@ func main() {
 
 	api := app.Group("/api")
 	api.Use(auth.OptionalJWTMiddleware())
-	api.Post("/login", userController.UserLogin)
+	//api.Post("/login", userController.UserLogin)
 	api.Get("/i", func(c fiber.Ctx) error {
 		user := jwtware.FromContext(c)
 		claims := user.Claims.(*auth.AuthClaims)
@@ -139,6 +141,10 @@ func main() {
 			"user":    username,
 		})
 	})
+
+	api.Get("/apartments/search", apartmentControler.GetApartmentsDetail)
+	api.Post("/favorites", auth.AutorizedJWTMiddleware(), apartmentControler.PostFavorite)
+	api.Delete("/favorites", auth.AutorizedJWTMiddleware(), apartmentControler.DeleteFavorites)
 
 	app.Listen(":8000")
 }

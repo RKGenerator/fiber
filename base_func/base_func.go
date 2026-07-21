@@ -49,3 +49,26 @@ func CheckPassword(password, hashed string) bool {
 
 	return subtle.ConstantTimeCompare(newHash, storedHash) == 1
 }
+
+func ChoiseOrder(reqOrder *string) (*string, bool) {
+	var name_column *string
+	var desc bool
+	if reqOrder == nil {
+		return nil, true
+	}
+
+	res := strings.Split(*reqOrder, ".")
+	if res[0] != "" {
+		name_column = &res[0]
+	} else {
+		name_column = nil
+	}
+
+	if res[1] == "" || res[1] != "asc" {
+		desc = true
+	} else {
+		desc = false
+	}
+
+	return name_column, desc
+}

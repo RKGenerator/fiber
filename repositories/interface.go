@@ -8,6 +8,9 @@ import (
 type ApartmentsInterface interface {
 	GetApartments() ([]*model.Apartment, error)
 	GetApartmentsDetail(dto.ApartmentDetailsRequest) ([]*model.Apartment, error)
+	GetFavoriteToUser(int, []int64) ([]int64, error)
+	AddFavoriteApartmentToUser(int64, int) error
+	DeleteFavoritesToUser([]int64, int) (*int64, error)
 }
 
 type BuildingInterface interface {

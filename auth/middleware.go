@@ -10,10 +10,11 @@ import (
 func OptionalJWTMiddleware() fiber.Handler {
 	return jwtware.New(jwtware.Config{
 		SigningKey: jwtware.SigningKey{
-			Key: os.Getenv("JWT_SECRET"),
+			Key: []byte(os.Getenv("JWT_SECRET")),
 		},
+		Claims: &AuthClaims{},
 		ErrorHandler: func(c fiber.Ctx, err error) error {
-			println(err)
+			println(err.Error())
 			return c.Next()
 		},
 		SuccessHandler: func(c fiber.Ctx) error {
@@ -21,5 +22,14 @@ func OptionalJWTMiddleware() fiber.Handler {
 			println(token)
 			return c.Next()
 		},
+	})
+}
+
+func AutorizedJWTMiddleware() fiber.Handler {
+	return jwtware.New(jwtware.Config{
+		SigningKey: jwtware.SigningKey{
+			Key: []byte(os.Getenv("JWT_SECRET")),
+		},
+		Claims: &AuthClaims{},
 	})
 }
